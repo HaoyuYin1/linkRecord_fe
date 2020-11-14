@@ -118,7 +118,6 @@ class links extends Component {
                         </Item.Group>
 
                     </Grid.Column>
-
                 </Grid.Row>
                 <Divider inverted />
                 <Grid.Row columns={1}>

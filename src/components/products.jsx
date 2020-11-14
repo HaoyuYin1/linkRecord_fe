@@ -20,10 +20,6 @@ class products extends Component {
             })
     }
 
-    fetchAllProduct = () => {
-        
-    }
-
 
     render() {
         return (
