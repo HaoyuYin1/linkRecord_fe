@@ -9,19 +9,14 @@ import {
     TextArea,
 } from 'semantic-ui-react'
 
-const options = [
-    { key: 'm', text: 'Male', value: 'male' },
-    { key: 'f', text: 'Female', value: 'female' },
-    { key: 'o', text: 'Other', value: 'other' },
-]
 class CustomForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
+
     handleChange = (e, { name, value }) => {
         this.props.formValueChange(name, value)
-        // console.log(name, value)
     }
 
     render() {
@@ -38,9 +33,9 @@ class CustomForm extends Component {
                     />
                     <Form.Field required
                         control={Input}
-                        label='SKU'
-                        name="SKU"
-                        placeholder='SKU'
+                        label='sku'
+                        name="sku"
+                        placeholder='sku'
                         onChange={this.handleChange}
                     />
                     <Form.Field required

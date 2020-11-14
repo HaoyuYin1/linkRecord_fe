@@ -35,15 +35,16 @@ class AddModal extends Component {
   }
 
   submitProduct = () => {
-    console.log(123)
-    this.props.history.push('/test')
-    // axios.post('/product', this.state.customForm)
-    //   .then(response => {
-    //     if (response.status == 200) {
-    //       console.log(response)
-    //     }
-        
-    //   })
+    console.log( this.state.customForm)
+    
+    axios.post('/product', this.state.customForm)
+      .then(response => {
+        if (response.status == 200) {
+          console.log(response)
+          // this.props.history.push('/')
+          this.props.history.push('/test')
+        }
+      })
   }
 
 

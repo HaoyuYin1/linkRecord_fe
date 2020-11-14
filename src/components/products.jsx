@@ -1,35 +1,27 @@
 import React, { Component } from 'react'
 import { Segment, Input, Icon, Button, Grid, Card, Image, Header, Modal } from 'semantic-ui-react'
 import AddModal from "./addModal";
+import axios from 'axios'
 
 class products extends Component {
     constructor(props) {
         super(props);
         this.state = {
             products: [
-                {
-                    name: 'test1',
-                    price: 100.00,
-                    imageUrl: 'https://via.placeholder.com/150',
-                    SKU: '123-234',
-                    releaseDate: '2020-01-01'
-                },
-                {
-                    name: 'test1test1test1test1test1test1test1test1test1test1test1',
-                    price: 100.00,
-                    imageUrl: 'https://via.placeholder.com/150',
-                    SKU: '123-234',
-                    releaseDate: '2020-01-01'
-                },
-                {
-                    name: 'test1',
-                    price: 100.00,
-                    imageUrl: 'https://via.placeholder.com/150',
-                    SKU: '123-234',
-                    releaseDate: '2020-01-01'
-                }
             ]
         };
+    }
+
+    componentDidMount = () => {
+        axios.get('/products').
+            then(response => {
+                console.log(response)
+                this.setState({products: response.data})
+            })
+    }
+
+    fetchAllProduct = () => {
+        
     }
 
 
@@ -50,7 +42,7 @@ class products extends Component {
                 <Grid.Row columns={4}>
                     {this.state.products.map(product => (
                         <Grid.Column>
-                            <Card href='#card-example-link-card'>
+                            <Card href={'#' + product.sku}>
                                 <Image src={product.imageUrl} wrapped></Image>
                                 <Card.Content>
                                     <Card.Header style={{"overflow": "hidden"}}>{product.name}</Card.Header>

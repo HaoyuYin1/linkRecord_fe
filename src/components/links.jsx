@@ -48,6 +48,9 @@ class links extends Component {
         }
     ]
 
+    /**
+     * when click add, push an empty object to pending list
+     */
     appendPendingLink = () => {
         const pendingLinks = this.state.pendingLinks;
         pendingLinks.push({
@@ -58,6 +61,12 @@ class links extends Component {
         this.setState({ pendingLinks })
     }
 
+    /**
+     * update one pending link in the pending list array
+     * @param {*} name 
+     * @param {*} value 
+     * @param {*} index 
+     */
     pendingLinkValueChange = (name, value, index) => {
         console.log(value)
         const pendingLinks = this.state.pendingLinks;
@@ -65,19 +74,28 @@ class links extends Component {
         this.setState({ pendingLinks });
     }
 
+    /**
+     * remove one pending link from pendinglist array
+     * @param {number} index 
+     */
     pendingLinkRemove = (index) => {
         const pendingLinks = this.state.pendingLinks;
         this.setState({ pendingLinks: pendingLinks.filter((pendingLink, i) => i !== index) });
+    }
+
+    cancelPendingLink = () => {
+        this.setState({ pendingLinks: []})
     }
 
     render() {
         return (
             <Grid columns={1} >
                 <Grid.Row>
-
-                    <Button icon >
+                <Grid.Column>
+                    <Button icon onClick={this.props.history.goBack}>
                         <Icon name='arrow left' />
                     </Button>
+                    </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={1}>
                     <Grid.Column>
@@ -176,7 +194,7 @@ class links extends Component {
                                             <Icon name='user' /> Add User
                                         </Button>
                                         <Button size='small'>Save</Button>
-                                        <Button disabled size='small'>
+                                        <Button size='small' onClick={this.cancelPendingLink}>
                                             Cancel
                                         </Button>
                                     </Table.HeaderCell>
