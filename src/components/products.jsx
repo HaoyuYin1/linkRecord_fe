@@ -23,7 +23,7 @@ class products extends Component {
 
     render() {
         return (
-            <Grid stackable>
+            <Grid stackable divided='vertically'>
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <Input inverted fluid icon placeholder='Search...'>
@@ -43,7 +43,7 @@ class products extends Component {
                                 <Card.Content>
                                     <Card.Header style={{"overflow": "hidden"}}>{product.name}</Card.Header>
                                     <Card.Meta>
-                                        <spanp>SKU: {product.SKU} </spanp><br/>
+                                        <spanp>SKU: {product.sku} </spanp><br/>
                                         <span>price: {product.price}</span>
                                     </Card.Meta>
                                 </Card.Content>

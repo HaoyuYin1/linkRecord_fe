@@ -1,28 +1,14 @@
 import React, { Component } from 'react'
 import { Button, Grid, Icon, Image, Item, Label, Header, Divider, Checkbox, Table, Dropdown, Input } from 'semantic-ui-react'
 import './links.css'
+import axios from 'axios'
 
 class links extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            product: {
-                name: 'test',
-                price: 123.1,
-                SKU: 'test sku',
-                imageUrl: 'https://www.popsci.com/resizer/oBw2zifFCqH3deU6vy2bPRSG99Q=/760x456/arc-anglerfish-arc2-prod-bonnier.s3.amazonaws.com/public/WMD5M52LJFBEBIHNEEABHVB6LA.jpg'
-            },
+            product: {},
             links: [
-                {
-                    store: 'store1',
-                    url: 'https://google.com',
-                    name: 'name 1'
-                },
-                {
-                    store: 'store1',
-                    url: 'https://google.com',
-                    name: 'name 1'
-                },
             ],
             pendingLinks: [
 
@@ -32,21 +18,45 @@ class links extends Component {
 
     stores = [
         {
-            key: 'Matt',
-            text: 'Matt',
-            value: 'Matt',
+            key: 'KITH',
+            text: 'KITH',
+            value: 'KITH',
         },
         {
-            key: '123',
-            text: '123',
-            value: '123',
+            key: 'Cncpts',
+            text: 'Cncpts',
+            value: 'Cncpts',
         },
         {
-            key: 'dsa',
-            text: 'dsa',
-            value: 'dsa',
-        }
+            key: 'Undftd',
+            text: 'Undftd',
+            value: 'Undftd',
+        },
+        {
+            key: 'Jimmy Jazz',
+            text: 'Jimmy Jazz',
+            value: 'Jimmy Jazz',
+        },
+        {
+            key: 'Dtlr',
+            text: 'Dtlr',
+            value: 'Dtlr',
+        },
+        
     ]
+
+    componentDidMount = () => {
+        const sku = this.props.match.params.linksId;
+        axios.get(`/product?sku=${sku}`).
+            then(response => {
+                console.log(response)
+                const data = response.data
+                this.setState({ product: data })
+                if (data.websites) {
+                    this.setState({ links: data.websites })
+                }
+            })
+    }
 
     /**
      * when click add, push an empty object to pending list
@@ -55,8 +65,8 @@ class links extends Component {
         const pendingLinks = this.state.pendingLinks;
         pendingLinks.push({
             store: '',
-            url: '',
-            name: ''
+            link: '',
+            productName: ''
         })
         this.setState({ pendingLinks })
     }
@@ -74,6 +84,11 @@ class links extends Component {
         this.setState({ pendingLinks });
     }
 
+    linkRemove = (index) => {
+        const links = this.state.links;
+        this.setState({ links: links.filter((link, i) => i !== index) });
+    }
+
     /**
      * remove one pending link from pendinglist array
      * @param {number} index 
@@ -84,17 +99,42 @@ class links extends Component {
     }
 
     cancelPendingLink = () => {
-        this.setState({ pendingLinks: []})
+        this.setState({ pendingLinks: [] })
     }
+
+    savePendingLink = () => {
+        const { product, links, pendingLinks } = this.state
+        product.websites = [...links, ...pendingLinks]
+        axios.post('/links', product)
+            .then(response => {
+                const data = response.data
+                this.setState({ product: data, pendingLinks: [] })
+                if (data.websites) {
+                    this.setState({ links: data.websites })
+                }
+
+            })
+    }
+
+    deleteProduct = () => {
+        const sku = this.props.match.params.linksId;
+        axios.delete(`/product?sku=${sku}`)
+            .then(response => {
+                console.log(response)
+                this.props.history.replace('')
+            })
+    }
+
+    submit
 
     render() {
         return (
             <Grid columns={1} >
                 <Grid.Row>
-                <Grid.Column>
-                    <Button icon onClick={this.props.history.goBack}>
-                        <Icon name='arrow left' />
-                    </Button>
+                    <Grid.Column>
+                        <Button icon onClick={this.props.history.goBack}>
+                            <Icon name='arrow left' />
+                        </Button>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={1}>
@@ -105,10 +145,10 @@ class links extends Component {
                                 <Item.Image size="medium" src={this.state.product.imageUrl} />
                                 <Item.Content verticalAlign='middle'>
                                     <Header size="huge" className="metaData">{this.state.product.name}</Header>
-                                    <Item.Meta className="metaData">{this.state.product.SKU}</Item.Meta>
+                                    <Item.Meta className="metaData">{this.state.product.sku}</Item.Meta>
                                     {this.state.product.price ? <Item.Meta className="metaData">$ {this.state.product.price}</Item.Meta> : null}
                                     <Item.Extra>
-                                        <Button primary floated='right'>
+                                        <Button primary floated='right' onClick={this.deleteProduct}>
                                             Delete
                                         <Icon name='right chevron' />
                                         </Button>
@@ -128,7 +168,7 @@ class links extends Component {
                                     <Table.HeaderCell>Store</Table.HeaderCell>
                                     <Table.HeaderCell>Link</Table.HeaderCell>
                                     <Table.HeaderCell>Name</Table.HeaderCell>
-                                    <Table.HeaderCell><Icon name='folder' /></Table.HeaderCell>
+                                    <Table.HeaderCell>Delete</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             {
@@ -136,9 +176,13 @@ class links extends Component {
                                     <Table.Body>
                                         <Table.Row>
                                             <Table.Cell>{link.store}</Table.Cell>
-                                            <Table.Cell>{link.url}</Table.Cell>
-                                            <Table.Cell>{link.name}</Table.Cell>
-                                            <Table.Cell>{index}</Table.Cell>
+                                            <Table.Cell>{link.link}</Table.Cell>
+                                            <Table.Cell>{link.productName}</Table.Cell>
+                                            <Table.Cell>                                                
+                                                <Button icon onClick={() => this.linkRemove(index)}>
+                                                    <Icon name='trash alternate' />
+                                                </Button>
+                                            </Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 ))
@@ -159,16 +203,16 @@ class links extends Component {
                                                 ></Dropdown>
                                             </Table.Cell>
                                             <Table.Cell>
-                                                <Input value={pendingLink.url} fluid type="text" placeholder="Link"
-                                                    onChange={(event, { value }) => this.pendingLinkValueChange('url', value, index)} />
+                                                <Input value={pendingLink.link} fluid type="text" placeholder="Link"
+                                                    onChange={(event, { value }) => this.pendingLinkValueChange('link', value, index)} />
                                             </Table.Cell>
                                             <Table.Cell>
-                                                <Input value={pendingLink.name} fluid type="text" placeholder="Name"
-                                                    onChange={(event, { value }) => this.pendingLinkValueChange('name', value, index)} />
+                                                <Input value={pendingLink.productName} fluid type="text" placeholder="Name"
+                                                    onChange={(event, { value }) => this.pendingLinkValueChange('productName', value, index)} />
                                             </Table.Cell>
                                             <Table.Cell>
                                                 <Button icon onClick={() => this.pendingLinkRemove(index)}>
-                                                    <Icon name='folder' />
+                                                <Icon name='trash alternate' />
                                                 </Button>
                                             </Table.Cell>
                                         </Table.Row>
@@ -190,9 +234,9 @@ class links extends Component {
                                             size='small'
                                             onClick={this.appendPendingLink}
                                         >
-                                            <Icon name='user' /> Add User
+                                            <Icon name='user' /> Add
                                         </Button>
-                                        <Button size='small'>Save</Button>
+                                        <Button size='small' onClick={this.savePendingLink}>Save</Button>
                                         <Button size='small' onClick={this.cancelPendingLink}>
                                             Cancel
                                         </Button>

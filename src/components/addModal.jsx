@@ -41,8 +41,9 @@ class AddModal extends Component {
       .then(response => {
         if (response.status == 200) {
           console.log(response)
+          const data = response.data;
           // this.props.history.push('/')
-          this.props.history.push('/test')
+          this.props.history.push(`${data.sku}`)
         }
       })
   }
