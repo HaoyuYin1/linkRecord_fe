@@ -29,7 +29,6 @@
       "react-app/jest"
     ]
   },
-  "proxy": "http://linkrecorder-env.eba-krprpgxm.us-west-2.elasticbeanstalk.com",
   "browserslist": {
     "production": [
       ">0.2%",

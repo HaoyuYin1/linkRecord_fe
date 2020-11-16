@@ -13,7 +13,7 @@ class products extends Component {
     }
 
     componentDidMount = () => {
-        axios.get('/products').
+        axios.get('http://linkrecorder-env.eba-krprpgxm.us-west-2.elasticbeanstalk.com/products').
             then(response => {
                 console.log(response)
                 this.setState({products: response.data})
