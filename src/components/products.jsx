@@ -12,8 +12,11 @@ class products extends Component {
         };
     }
 
+    /**
+     * Load all products
+     */
     componentDidMount = () => {
-        axios.get('http://linkrecorder-env.eba-krprpgxm.us-west-2.elasticbeanstalk.com/products').
+        axios.get(`${process.env.REACT_APP_DOMAIN}/products`).
             then(response => {
                 console.log(response)
                 this.setState({products: response.data})

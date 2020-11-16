@@ -47,7 +47,7 @@ class links extends Component {
 
     componentDidMount = () => {
         const sku = this.props.match.params.linksId;
-        axios.get(`/product?sku=${sku}`).
+        axios.get(`${process.env.REACT_APP_DOMAIN}/product?sku=${sku}`).
             then(response => {
                 console.log(response)
                 const data = response.data
@@ -98,10 +98,16 @@ class links extends Component {
         this.setState({ pendingLinks: pendingLinks.filter((pendingLink, i) => i !== index) });
     }
 
+    /**
+     * cancel all unsaved changes
+     */
     cancelPendingLink = () => {
         this.setState({ pendingLinks: [] })
     }
 
+    /**
+     * save pending links to db and reset state
+     */
     savePendingLink = () => {
         const { product, links, pendingLinks } = this.state
         product.websites = [...links, ...pendingLinks]
@@ -116,6 +122,9 @@ class links extends Component {
             })
     }
 
+    /**
+     * remove product and back to homepage
+     */
     deleteProduct = () => {
         const sku = this.props.match.params.linksId;
         axios.delete(`/product?sku=${sku}`)
@@ -125,7 +134,6 @@ class links extends Component {
             })
     }
 
-    submit
 
     render() {
         return (

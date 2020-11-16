@@ -37,7 +37,7 @@ class AddModal extends Component {
   submitProduct = () => {
     console.log( this.state.customForm)
     
-    axios.post('/product', this.state.customForm)
+    axios.post(`${process.env.REACT_APP_DOMAIN}/product`, this.state.customForm)
       .then(response => {
         if (response.status == 200) {
           console.log(response)

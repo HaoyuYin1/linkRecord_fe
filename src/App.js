@@ -1,5 +1,3 @@
-import logo from './logo.svg';
-import './App.css';
 import { BrowserRouter as Router, Route, NavLink, HashRouter, Switch } from 'react-router-dom'
 import links from './components/links';
 import products from './components/products';
