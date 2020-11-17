@@ -111,7 +111,7 @@ class links extends Component {
     savePendingLink = () => {
         const { product, links, pendingLinks } = this.state
         product.websites = [...links, ...pendingLinks]
-        axios.post('/links', product)
+        axios.post(`${process.env.REACT_APP_DOMAIN}/links`, product)
             .then(response => {
                 const data = response.data
                 this.setState({ product: data, pendingLinks: [] })
@@ -127,7 +127,7 @@ class links extends Component {
      */
     deleteProduct = () => {
         const sku = this.props.match.params.linksId;
-        axios.delete(`/product?sku=${sku}`)
+        axios.delete(`${process.env.REACT_APP_DOMAIN}/product?sku=${sku}`)
             .then(response => {
                 console.log(response)
                 this.props.history.replace('')
