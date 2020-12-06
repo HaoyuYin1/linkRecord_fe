@@ -8,7 +8,10 @@ class products extends Component {
         super(props);
         this.state = {
             products: [
-            ]
+            ],
+            filters:{
+                name:""
+            }
         };
     }
 
@@ -23,6 +26,16 @@ class products extends Component {
             })
     }
 
+    /**
+     * handle search input change
+     */
+    handleSearch = (event) => {
+        const filters = this.state.filters;
+        filters.name = event.target.value;
+        this.setState({filters});
+        console.log(event.target.value);
+    }
+
 
     render() {
         return (
@@ -30,7 +43,7 @@ class products extends Component {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <Input inverted fluid icon placeholder='Search...'>
-                            <input />
+                            <input value={this.state.filters.name} onChange={this.handleSearch}/>
                             <Icon name='search' />
                         </Input>
                     </Grid.Column>
@@ -39,7 +52,14 @@ class products extends Component {
                     </Grid.Column>
                 </Grid.Row >
                 <Grid.Row columns={4}>
-                    {this.state.products.map(product => (
+                    {this.state.products.filter(product => {
+                        if (this.state.filters.name) {
+                            return product.name.toLowerCase().includes(this.state.filters.name.toLowerCase());
+                        } else {
+                            return true;
+                        }
+                    })
+                    .map(product => (
                         <Grid.Column>
                             <Card href={'#' + product.sku}>
                                 <Image src={product.imageUrl} wrapped></Image>
