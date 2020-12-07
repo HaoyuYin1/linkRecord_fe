@@ -8,8 +8,7 @@ function App() {
   return (
     <Container style={{ margin: 20 }}>
       <Header as='h1' inverted color='grey'>
-        <Icon name='plug' />
-        <Header.Content>Uptime Guarantee</Header.Content>
+        <Header.Content>🔗 Link Recoder</Header.Content>
       </Header>
       <HashRouter>
         <Switch>
