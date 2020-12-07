@@ -16,7 +16,6 @@ class AddModal extends Component {
 
   handlePreview = () => {
     if (Object.keys(this.state.customForm).length > 0) {
-      console.log(this.state.customForm)
       this.setState({ showPreview: true });
     }
   }
@@ -34,18 +33,12 @@ class AddModal extends Component {
     this.setState({ customForm: form })
   }
 
-  submitProduct = () => {
-    console.log( this.state.customForm)
-    
-    axios.post(`${process.env.REACT_APP_DOMAIN}/product`, this.state.customForm)
-      .then(response => {
-        if (response.status == 200) {
-          console.log(response)
-          const data = response.data;
-          // this.props.history.push('/')
-          this.props.history.push(`${data.sku}`)
-        }
-      })
+  submitProduct = async () => {
+    const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/product`, this.state.customForm)
+    if (response.status === 200) {
+      const data = response.data;
+      this.props.history.push(`${data.sku}`)
+    }
   }
 
 

@@ -42,20 +42,28 @@ class links extends Component {
             text: 'Dtlr',
             value: 'Dtlr',
         },
-        
+        {
+            key: 'DSMNY',
+            text: 'DSMNY',
+            value: 'DSMNY'
+        }
     ]
 
-    componentDidMount = () => {
+    /**
+     * load product when component did mount,
+     * if product not exit, replace url to homepage
+     */
+    componentDidMount = async () => {
         const sku = this.props.match.params.linksId;
-        axios.get(`${process.env.REACT_APP_DOMAIN}/product?sku=${sku}`).
-            then(response => {
-                console.log(response)
-                const data = response.data
-                this.setState({ product: data })
-                if (data.websites) {
-                    this.setState({ links: data.websites })
-                }
-            })
+        const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/product?sku=${sku}`);
+        const data = response.data
+        if (!data) {
+            this.props.history.replace('')
+        }
+        this.setState({ product: data })
+        if (data.websites) {
+            this.setState({ links: data.websites })
+        }
     }
 
     /**
@@ -78,7 +86,6 @@ class links extends Component {
      * @param {*} index 
      */
     pendingLinkValueChange = (name, value, index) => {
-        console.log(value)
         const pendingLinks = this.state.pendingLinks;
         pendingLinks[index][name] = value;
         this.setState({ pendingLinks });
@@ -108,30 +115,24 @@ class links extends Component {
     /**
      * save pending links to db and reset state
      */
-    savePendingLink = () => {
+    savePendingLink = async () => {
         const { product, links, pendingLinks } = this.state
         product.websites = [...links, ...pendingLinks]
-        axios.post(`${process.env.REACT_APP_DOMAIN}/links`, product)
-            .then(response => {
-                const data = response.data
-                this.setState({ product: data, pendingLinks: [] })
-                if (data.websites) {
-                    this.setState({ links: data.websites })
-                }
-
-            })
+        const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/links`, product)
+        const data = response.data
+        this.setState({ product: data, pendingLinks: [] })
+        if (data.websites) {
+            this.setState({ links: data.websites })
+        }
     }
 
     /**
      * remove product and back to homepage
      */
-    deleteProduct = () => {
+    deleteProduct = async () => {
         const sku = this.props.match.params.linksId;
-        axios.delete(`${process.env.REACT_APP_DOMAIN}/product?sku=${sku}`)
-            .then(response => {
-                console.log(response)
-                this.props.history.replace('')
-            })
+        const response = await axios.delete(`${process.env.REACT_APP_DOMAIN}/product?sku=${sku}`);
+        this.props.history.replace('')
     }
 
 
@@ -227,10 +228,6 @@ class links extends Component {
                                     </Table.Body>
                                 ))
                             }
-
-
-
-
                             <Table.Footer fullWidth>
                                 <Table.Row>
                                     <Table.HeaderCell colSpan='4'>
@@ -242,7 +239,7 @@ class links extends Component {
                                             size='small'
                                             onClick={this.appendPendingLink}
                                         >
-                                            <Icon name='user' /> Add
+                                            <Icon name='plus' /> Add
                                         </Button>
                                         <Button size='small' onClick={this.savePendingLink}>Save</Button>
                                         <Button size='small' onClick={this.cancelPendingLink}>

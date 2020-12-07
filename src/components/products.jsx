@@ -11,19 +11,17 @@ class products extends Component {
             ],
             filters:{
                 name:""
-            }
+            },
+            loaded: false
         };
     }
 
     /**
      * Load all products
      */
-    componentDidMount = () => {
-        axios.get(`${process.env.REACT_APP_DOMAIN}/products`).
-            then(response => {
-                console.log(response)
-                this.setState({products: response.data})
-            })
+    componentDidMount = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/products`)
+        this.setState({products: response.data, loaded: true}) 
     }
 
     /**
@@ -33,48 +31,53 @@ class products extends Component {
         const filters = this.state.filters;
         filters.name = event.target.value;
         this.setState({filters});
-        console.log(event.target.value);
     }
 
 
     render() {
         return (
-            <Grid stackable divided='vertically'>
-                <Grid.Row columns={2}>
-                    <Grid.Column>
-                        <Input inverted fluid icon placeholder='Search...'>
-                            <input value={this.state.filters.name} onChange={this.handleSearch}/>
-                            <Icon name='search' />
-                        </Input>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <AddModal></AddModal>
-                    </Grid.Column>
-                </Grid.Row >
-                <Grid.Row columns={4}>
-                    {this.state.products.filter(product => {
-                        if (this.state.filters.name) {
-                            return product.name.toLowerCase().includes(this.state.filters.name.toLowerCase());
-                        } else {
-                            return true;
-                        }
-                    })
-                    .map(product => (
-                        <Grid.Column>
-                            <Card href={'#' + product.sku}>
-                                <Image src={product.imageUrl} wrapped></Image>
-                                <Card.Content>
-                                    <Card.Header style={{"overflow": "hidden"}}>{product.name}</Card.Header>
-                                    <Card.Meta>
-                                        <spanp>SKU: {product.sku} </spanp><br/>
-                                        <span>price: {product.price}</span>
-                                    </Card.Meta>
-                                </Card.Content>
-                            </Card>
-                        </Grid.Column>
-                    ))}
-                </Grid.Row>
-            </Grid>
+            <div>
+                {this.state.loaded?(
+                    <Grid stackable divided='vertically'>
+                        <Grid.Row columns={2}>
+                            <Grid.Column>
+                                <Input inverted fluid icon placeholder='Search...'>
+                                    <input value={this.state.filters.name} onChange={this.handleSearch}/>
+                                    <Icon name='search' />
+                                </Input>
+                            </Grid.Column>
+                            <Grid.Column>
+                                <AddModal></AddModal>
+                            </Grid.Column>
+                        </Grid.Row >
+                        <Grid.Row columns={4}>
+                            {this.state.products.filter(product => {
+                                if (this.state.filters.name) {
+                                    return product.name.toLowerCase().includes(this.state.filters.name.toLowerCase());
+                                } else {
+                                    return true;
+                                }
+                            })
+                            .map(product => (
+                                <Grid.Column>
+                                    <Card href={'#' + product.sku}>
+                                        <Image src={product.imageUrl} wrapped></Image>
+                                        <Card.Content>
+                                            <Card.Header style={{"overflow": "hidden"}}>{product.name}</Card.Header>
+                                            <Card.Meta>
+                                                <spanp>SKU: {product.sku} </spanp><br/>
+                                                <span>price: {product.price}</span>
+                                            </Card.Meta>
+                                        </Card.Content>
+                                    </Card>
+                                </Grid.Column>
+                            ))}
+                        </Grid.Row>
+                    </Grid>
+                ):(<div class="ui active dimmer">
+                <div class="ui loader"></div>
+              </div>)}    
+            </div>
         );
     }
 }
